@@ -1,4 +1,4 @@
-package com.zsq.filemanager.util;
+package com.zsq.document.util;
 
 /**
  * 
@@ -9,6 +9,7 @@ package com.zsq.filemanager.util;
  * 
  */
 public class ConstantSet {
+	public static final long MILLI_SECONDS = 1000;
 	public static final long INTERVAL_TIME = 6 * 1000;
 	public static final String CONFIG_FILE = "CONFIG_FILE";
 	public static final String CUSTOM_DIR = "CUSTOM_DIR";

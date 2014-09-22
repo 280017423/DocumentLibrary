@@ -1,4 +1,4 @@
-package com.zsq.filemanager.activity;
+package com.zsq.document.activity;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
-import com.zsq.filemanager.R;
+import com.zsq.document.R;
 
 public class LoadingActivity extends ActivityBase {
 	private static final int DISPLAY_TIME = 3000;

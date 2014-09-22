@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.zsq.filemanager"
+    package="com.zsq.document"
     android:versionCode="10000"
     android:versionName="1.0.0" >
 
@@ -17,7 +17,7 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
-        android:name="com.zsq.filemanager.app.FileApplication"
+        android:name="com.zsq.document.app.FileApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"

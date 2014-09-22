@@ -1,4 +1,4 @@
-package com.zsq.filemanager.activity;
+package com.zsq.document.activity;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -18,25 +19,28 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.zsq.filemanager.R;
-import com.zsq.filemanager.adapter.FolderAdapter;
-import com.zsq.filemanager.util.ConstantSet;
-import com.zsq.filemanager.util.FileUtil;
-import com.zsq.filemanager.util.OpenFileUtil;
-import com.zsq.filemanager.util.StringUtil;
+import com.zsq.document.R;
+import com.zsq.document.adapter.FolderAdapter;
+import com.zsq.document.util.ConstantSet;
+import com.zsq.document.util.FileUtil;
+import com.zsq.document.util.OpenFileUtil;
+import com.zsq.document.util.StringUtil;
 
 public class MainActivity extends ActivityBase implements OnClickListener, OnItemClickListener {
 	private static final long WAIT_TIME = 2000;
 	private static final int REQUEST_CODE = 1;
+	private static final int DIALOG_HIDE_DISPLAY = 1;
+	private static final int CLICK_COUNT_FIVE = 5;
+	private static int CLICK_COUNT;
+	private long mSystemCurrentTime;
 	private GridView mGvRootFolder;
 	private ArrayList<File> mFileList;
 	private FolderAdapter mFilAdapter;
 	private File mResDir;
 	private File mCurrentFile;
 	private LinearLayout mLlBack;
-	private LinearLayout mLlAbout;
 	private long mTouchTime;
-	private TextView mTvRight;
+	private TextView mTitleTextView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +53,7 @@ public class MainActivity extends ActivityBase implements OnClickListener, OnIte
 	}
 
 	private void initVariables() {
+		mSystemCurrentTime = System.currentTimeMillis();
 		FileUtil.initDir(this);
 		mFileList = new ArrayList<File>();
 		mFilAdapter = new FolderAdapter(this, mFileList);
@@ -59,31 +64,24 @@ public class MainActivity extends ActivityBase implements OnClickListener, OnIte
 	private void initView() {
 		mGvRootFolder = (GridView) findViewById(R.id.gv_root_folder);
 		mGvRootFolder.setAdapter(mFilAdapter);
-		TextView titleTextView = (TextView) findViewById(R.id.title_with_back_title_btn_mid);
-		titleTextView.setText(R.string.app_name);
+		mTitleTextView = (TextView) findViewById(R.id.title_with_back_title_btn_mid);
+		mTitleTextView.setText(R.string.app_name);
 		mLlBack = (LinearLayout) findViewById(R.id.title_with_back_title_btn_left);
-		mLlAbout = (LinearLayout) findViewById(R.id.title_with_back_title_btn_right);
 		TextView mTvBack = (TextView) findViewById(R.id.tv_title_with_back_left);
 		mTvBack.setText(R.string.title_back_text);
 		mTvBack.setBackgroundResource(R.drawable.btn_back_bg);
-		mTvRight = (TextView) findViewById(R.id.tv_title_with_right);
-		mTvRight.setBackgroundResource(R.drawable.tongyong_button_bg);
 	}
 
 	@Override
 	protected void onResume() {
-		if (FileUtil.isHiddenDir(this)) {
-			mTvRight.setText(R.string.display);
-		} else {
-			mTvRight.setText(R.string.hide);
-		}
+		mSystemCurrentTime = System.currentTimeMillis();
 		super.onResume();
 	}
 
 	private void setListener() {
 		mGvRootFolder.setOnItemClickListener(this);
 		mLlBack.setOnClickListener(this);
-		mLlAbout.setOnClickListener(this);
+		mTitleTextView.setOnClickListener(this);
 	}
 
 	private void getFileList() {
@@ -113,10 +111,12 @@ public class MainActivity extends ActivityBase implements OnClickListener, OnIte
 			Collections.sort(mFileList, new Comparator<File>() {
 				@Override
 				public int compare(File o1, File o2) {
-					if (o1.isDirectory() && o2.isFile())
+					if (o1.isDirectory() && o2.isFile()) {
 						return -1;
-					if (o1.isFile() && o2.isDirectory())
+					}
+					if (o1.isFile() && o2.isDirectory()) {
 						return 1;
+					}
 					return o1.getName().compareTo(o2.getName());
 				}
 			});
@@ -153,26 +153,53 @@ public class MainActivity extends ActivityBase implements OnClickListener, OnIte
 					getFileList();
 				}
 				break;
-			case R.id.title_with_back_title_btn_right:
-				if (FileUtil.isHiddenDir(this)) {
-					FileUtil.rename(MainActivity.this, mResDir, ConstantSet.DEFAULT_PATH);
+			case R.id.title_with_back_title_btn_mid:
+				long currentTime = System.currentTimeMillis();
+				if (Math.abs(currentTime - mSystemCurrentTime) <= 2 * ConstantSet.MILLI_SECONDS) {
+					CLICK_COUNT += 1;
+					mSystemCurrentTime = currentTime;
 				} else {
-					FileUtil.rename(MainActivity.this, mResDir, ConstantSet.HIDDEN_PATH);
+					CLICK_COUNT = 0;
+					mSystemCurrentTime = currentTime;
 				}
-				mResDir = FileUtil.getResDir(this);
-				mCurrentFile = mResDir;
-				getFileList();
-				if (FileUtil.isHiddenDir(this)) {
-					mTvRight.setText(R.string.display);
-					Toast.makeText(MainActivity.this, getString(R.string.toast_hide), Toast.LENGTH_LONG).show();
-				} else {
-					mTvRight.setText(R.string.hide);
-					Toast.makeText(MainActivity.this, getString(R.string.toast_display), Toast.LENGTH_LONG).show();
+				if (CLICK_COUNT == CLICK_COUNT_FIVE) {
+					showHideDialog(DIALOG_HIDE_DISPLAY);
+					CLICK_COUNT = 0;
 				}
+
 				break;
 			default:
 				break;
 		}
+	}
+
+	private void showHideDialog(int id) {
+		String message = getString(R.string.title_hide_message);
+		if (FileUtil.isHiddenDir(this)) {
+			message = getString(R.string.title_display_message);
+		}
+		createDialogBuilder(this, getString(R.string.button_text_tips), message, getString(R.string.cancel),
+				getString(R.string.ensure)).create(id).show();
+	}
+
+	@Override
+	public void onNegativeBtnClick(int id, DialogInterface dialog, int which) {
+		if (DIALOG_HIDE_DISPLAY == id) {
+			if (FileUtil.isHiddenDir(this)) {
+				FileUtil.rename(MainActivity.this, mResDir, ConstantSet.DEFAULT_PATH);
+			} else {
+				FileUtil.rename(MainActivity.this, mResDir, ConstantSet.HIDDEN_PATH);
+			}
+			mResDir = FileUtil.getResDir(this);
+			mCurrentFile = mResDir;
+			getFileList();
+			if (FileUtil.isHiddenDir(this)) {
+				Toast.makeText(MainActivity.this, getString(R.string.toast_hide), Toast.LENGTH_LONG).show();
+			} else {
+				Toast.makeText(MainActivity.this, getString(R.string.toast_display), Toast.LENGTH_LONG).show();
+			}
+		}
+		super.onNegativeBtnClick(id, dialog, which);
 	}
 
 	@Override

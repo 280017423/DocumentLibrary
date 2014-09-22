@@ -1,4 +1,4 @@
-package com.zsq.filemanager.util;
+package com.zsq.document.util;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

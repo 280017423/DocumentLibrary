@@ -1,4 +1,4 @@
-package com.zsq.filemanager.util;
+package com.zsq.document.util;
 
 import java.io.File;
 
@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
-import com.zsq.filemanager.R;
+import com.zsq.document.R;
 
 /**
  * 

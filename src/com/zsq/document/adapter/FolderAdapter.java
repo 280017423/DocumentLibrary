@@ -7,7 +7,7 @@
  * @date 2012-12-10 下午04:37:29
  * @version V1.0
  */
-package com.zsq.filemanager.adapter;
+package com.zsq.document.adapter;
 
 import java.io.File;
 import java.util.List;
@@ -23,9 +23,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.zsq.filemanager.R;
-import com.zsq.filemanager.util.OpenFileUtil;
-import com.zsq.filemanager.util.UIUtil;
+import com.zsq.document.R;
+import com.zsq.document.util.OpenFileUtil;
+import com.zsq.document.util.UIUtil;
 
 /**
  * 文件列表适配器

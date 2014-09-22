@@ -1,4 +1,4 @@
-package com.zsq.filemanager.activity;
+package com.zsq.document.activity;
 
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
@@ -9,10 +9,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.zsq.filemanager.R;
-import com.zsq.filemanager.util.ConstantSet;
-import com.zsq.filemanager.util.SharedPreferenceUtil;
-import com.zsq.filemanager.util.StringUtil;
+import com.zsq.document.R;
+import com.zsq.document.util.ConstantSet;
+import com.zsq.document.util.SharedPreferenceUtil;
+import com.zsq.document.util.StringUtil;
 
 public class AboutActivity extends ActivityBase implements OnClickListener {
 

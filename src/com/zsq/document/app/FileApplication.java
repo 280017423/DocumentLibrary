@@ -1,4 +1,4 @@
-package com.zsq.filemanager.app;
+package com.zsq.document.app;
 
 import android.app.Application;
 import android.util.Log;

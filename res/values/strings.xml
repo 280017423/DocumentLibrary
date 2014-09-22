@@ -13,5 +13,10 @@
     <string name="display">显示</string>
     <string name="toast_hide">资料库已隐藏</string>
     <string name="toast_display">资料库已显示</string>
+    <string name="title_hide_message">是否隐藏资料库？</string>
+    <string name="title_display_message">是否显示资料库？</string>
+    <string name="cancel">取消</string>
+    <string name="ensure">确定</string>
+    <string name="button_text_tips">提示</string>
 
 </resources>

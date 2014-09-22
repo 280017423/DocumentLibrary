@@ -1,11 +1,10 @@
-package com.zsq.filemanager.util;
+package com.zsq.document.util;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -26,7 +25,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.zsq.filemanager.listener.IActionListener;
+import com.zsq.document.listener.IActionListener;
 
 /**
  * UI的帮助类
