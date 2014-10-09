@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
@@ -25,14 +26,12 @@ import com.zsq.document.util.ConstantSet;
 import com.zsq.document.util.FileUtil;
 import com.zsq.document.util.OpenFileUtil;
 import com.zsq.document.util.StringUtil;
+import com.zsq.document.widget.LongPressTextView;
 
 public class MainActivity extends ActivityBase implements OnClickListener, OnItemClickListener {
 	private static final long WAIT_TIME = 2000;
 	private static final int REQUEST_CODE = 1;
 	private static final int DIALOG_HIDE_DISPLAY = 1;
-	private static final int CLICK_COUNT_FIVE = 5;
-	private static int CLICK_COUNT;
-	private long mSystemCurrentTime;
 	private GridView mGvRootFolder;
 	private ArrayList<File> mFileList;
 	private FolderAdapter mFilAdapter;
@@ -40,7 +39,7 @@ public class MainActivity extends ActivityBase implements OnClickListener, OnIte
 	private File mCurrentFile;
 	private LinearLayout mLlBack;
 	private long mTouchTime;
-	private TextView mTitleTextView;
+	private LongPressTextView mTitleTextView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +52,6 @@ public class MainActivity extends ActivityBase implements OnClickListener, OnIte
 	}
 
 	private void initVariables() {
-		mSystemCurrentTime = System.currentTimeMillis();
 		FileUtil.initDir(this);
 		mFileList = new ArrayList<File>();
 		mFilAdapter = new FolderAdapter(this, mFileList);
@@ -64,7 +62,7 @@ public class MainActivity extends ActivityBase implements OnClickListener, OnIte
 	private void initView() {
 		mGvRootFolder = (GridView) findViewById(R.id.gv_root_folder);
 		mGvRootFolder.setAdapter(mFilAdapter);
-		mTitleTextView = (TextView) findViewById(R.id.title_with_back_title_btn_mid);
+		mTitleTextView = (LongPressTextView) findViewById(R.id.title_with_back_title_btn_mid);
 		mTitleTextView.setText(R.string.app_name);
 		mLlBack = (LinearLayout) findViewById(R.id.title_with_back_title_btn_left);
 		TextView mTvBack = (TextView) findViewById(R.id.tv_title_with_back_left);
@@ -72,16 +70,17 @@ public class MainActivity extends ActivityBase implements OnClickListener, OnIte
 		mTvBack.setBackgroundResource(R.drawable.btn_back_bg);
 	}
 
-	@Override
-	protected void onResume() {
-		mSystemCurrentTime = System.currentTimeMillis();
-		super.onResume();
-	}
-
 	private void setListener() {
 		mGvRootFolder.setOnItemClickListener(this);
 		mLlBack.setOnClickListener(this);
-		mTitleTextView.setOnClickListener(this);
+		mTitleTextView.setOnLongClickListener(new OnLongClickListener() {
+
+			@Override
+			public boolean onLongClick(View view) {
+				showHideDialog(DIALOG_HIDE_DISPLAY);
+				return true;
+			}
+		});
 	}
 
 	private void getFileList() {
@@ -152,21 +151,6 @@ public class MainActivity extends ActivityBase implements OnClickListener, OnIte
 					mCurrentFile = mCurrentFile.getParentFile();
 					getFileList();
 				}
-				break;
-			case R.id.title_with_back_title_btn_mid:
-				long currentTime = System.currentTimeMillis();
-				if (Math.abs(currentTime - mSystemCurrentTime) <= 2 * ConstantSet.MILLI_SECONDS) {
-					CLICK_COUNT += 1;
-					mSystemCurrentTime = currentTime;
-				} else {
-					CLICK_COUNT = 0;
-					mSystemCurrentTime = currentTime;
-				}
-				if (CLICK_COUNT == CLICK_COUNT_FIVE) {
-					showHideDialog(DIALOG_HIDE_DISPLAY);
-					CLICK_COUNT = 0;
-				}
-
 				break;
 			default:
 				break;
