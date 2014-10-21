@@ -61,7 +61,7 @@ public class LongPressTextView extends TextView {
 				mCounter++;
 				isReleased = false;
 				isMoved = false;
-				postDelayed(mLongPressRunnable, 5000);// 按下5秒后调用线程
+				postDelayed(mLongPressRunnable, 3000);// 按下5秒后调用线程
 				break;
 			case MotionEvent.ACTION_MOVE:
 				if (isMoved)
